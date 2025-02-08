@@ -1,0 +1,23 @@
+{
+  "name": "visilearn",
+  "version": "1.0.0",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node server.js"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "cors": "^2.8.5",
+    "express": "^4.21.2",
+    "fs": "^0.0.1-security",
+    "natural": "^8.0.1",
+    "node-summarizer": "^1.0.7",
+    "path": "^0.12.7",
+    "speech-recognition": "^0.0.1",
+    "speech-synthesis": "^0.3.2"
+  },
+  "description": ""
+}
