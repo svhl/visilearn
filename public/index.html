@@ -1,16 +1,170 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-	<meta charset="UTF-8">
-	<meta name="viewport" content="width=device-width, initial-scale=1.0">
-	<title>Voice Summarizer</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Learning App for Visually Impaired</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-	<h1>Voice Summarizer</h1>
-	<button id="start">Start Voice Input</button>
-	<p><strong>Recognized Filename:</strong> <span id="filename">Waiting...</span></p>
-	<p><strong>Summary:</strong> <span id="output">Waiting for input...</span></p>
-	<script src="script.js"></script>
+    <!-- Navigation Bar -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-primary-custom">
+        <a class="navbar-brand" href="#">VisiLearn</a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav ml-auto">
+                <li class="nav-item active">
+                    <a class="nav-link" href="#home">Home</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#text-to-speech">Text-to-Speech</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#braille-conversion">Braille Conversion</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#object-identification">Object Identification</a>
+                </li>
+            </ul>
+        </div>
+    </nav>
+
+    <!-- Home Section -->
+    <section id="home" class="py-5 bg-light-custom">
+        <div class="container text-center">
+            <h1 class="display-4 text-primary-custom">Welcome to VisiLearn</h1>
+            <p class="lead text-secondary-custom">An all-in-one platform designed to make learning accessible for visually impaired students.</p>
+            <button class="btn btn-primary-custom btn-lg">Start Voice Navigation</button>
+        </div>
+    </section>
+
+    <!-- Text-to-Speech Section -->
+    <section id="text-to-speech" class="py-5">
+        <div class="container">
+            <h2 class="text-center mb-4 text-primary-custom">Text-to-Speech</h2>
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="card shadow">
+                        <div class="card-body">
+                            <h5 class="card-title text-primary-custom">Open a File</h5>
+                            <p class="card-text text-secondary-custom">Say <kbd>Open [file name]</kbd> to load a document.</p>
+                            <div class="form-group">
+                                <label for="fileSelect" class="text-primary-custom">Select File:</label>
+                                <select id="fileSelect" class="form-control">
+                                    <option value="math.txt">Math Notes</option>
+                                    <option value="science.txt">Science Notes</option>
+                                    <option value="history.txt">History Notes</option>
+                                </select>
+                            </div>
+                            <button class="btn btn-primary-custom">Open File</button>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="card shadow">
+                        <div class="card-body">
+                            <h5 class="card-title text-primary-custom">Document Content</h5>
+                            <p class="card-text text-secondary-custom" id="documentText">No file opened yet. Say <kbd>Open [file name]</kbd> to load a document.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Braille Conversion Section -->
+    <section id="braille-conversion" class="py-5 bg-light-custom">
+        <div class="container">
+            <h2 class="text-center mb-4 text-primary-custom">Braille Conversion</h2>
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="card shadow">
+                        <div class="card-body">
+                            <h5 class="card-title text-primary-custom">Convert to Braille</h5>
+                            <p class="card-text text-secondary-custom">Say <kbd>Convert to Braille</kbd> to convert the loaded document.</p>
+                            <button class="btn btn-primary-custom">Convert</button>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="card shadow">
+                        <div class="card-body">
+                            <h5 class="card-title text-primary-custom">Braille Output</h5>
+                            <p class="card-text text-secondary-custom" id="brailleOutput">No Braille output yet.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Object Identification Section -->
+    <section id="object-identification" class="py-5">
+        <div class="container">
+            <h2 class="text-center mb-4 text-primary-custom">Object Identification</h2>
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="card shadow">
+                        <div class="card-body">
+                            <h5 class="card-title text-primary-custom">Upload Image</h5>
+                            <p class="card-text text-secondary-custom">Say <kbd>Identify Object</kbd> to upload an image.</p>
+                            <input type="file" class="form-control">
+                            <button class="btn btn-primary-custom mt-3">Identify</button>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="card shadow">
+                        <div class="card-body">
+                            <h5 class="card-title text-primary-custom">Object Description</h5>
+                            <p class="card-text text-secondary-custom" id="objectDescription">No object identified yet.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+     <!-- Text Summarization Section -->
+     <section id="text-summarization" class="py-5 bg-light-custom">
+        <div class="container">
+            <h2 class="text-center mb-4 text-primary-custom">Text Summarization</h2>
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="card shadow">
+                        <div class="card-body">
+                            <h5 class="card-title text-primary-custom">Summarize Document</h5>
+                            <p class="card-text text-secondary-custom">Say <kbd>Summarize Document</kbd> to generate a summary.</p>
+                            <a href="summarizer.html"><button class="btn btn-primary-custom">Summarize</button></a>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="card shadow">
+                        <div class="card-body">
+                            <h5 class="card-title text-primary-custom">Summary Output</h5>
+                            <p class="card-text text-secondary-custom" id="summaryOutput">No summary generated yet.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+
+    <!-- Footer -->
+    <footer class="bg-primary-custom text-white text-center py-3">
+        <p>&copy; 2025 Learning App for Visually Impaired. All rights reserved.</p>
+    </footer>
+
+    <!-- Bootstrap JS and dependencies -->
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 </body>
 </html>
-
