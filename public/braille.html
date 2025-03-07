@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Braille Converter</title>
+    <style>
+        body { font-family: Arial, sans-serif; padding: 20px; }
+        textarea { width: 100%; height: 100px; }
+        pre { background: #f4f4f4; padding: 10px; }
+    </style>
+</head>
+<body>
+    <h2>Braille Converter</h2>
+    <textarea id="inputText" placeholder="Enter text here..."></textarea>
+    <button onclick="convertToBraille()">Convert</button>
+    <pre id="brailleOutput"></pre>
+    <a id="downloadLink" style="display:none;" download="output.brl">Download Braille File</a>
+
+    <script>
+        function convertToBraille() {
+            const text = document.getElementById('inputText').value;
+            fetch('http://localhost:5000/convert', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ text })
+            })
+            .then(response => response.json())
+            .then(data => {
+                document.getElementById('brailleOutput').textContent = data.brailleText;
+                const link = document.getElementById('downloadLink');
+                link.href = data.filePath;
+                link.style.display = 'block';
+                link.textContent = 'Download Braille File';
+            });
+        }
+    </script>
+</body>
+</html>
