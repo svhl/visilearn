@@ -28,7 +28,7 @@ start node server.js & start msedge --new-window http://localhost:3000
 node server.js & microsoft-edge --new-window http://localhost:3000
 ```
 
-### About the devs
+## About the devs
 
 Muhammed S. Suhail | [GitHub](https://github.com/svhl)\
 Fathima Meharin Irshad | [GitHub](https://github.com/meharinfathima)\
