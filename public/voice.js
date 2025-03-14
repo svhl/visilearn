@@ -1,14 +1,16 @@
 document.addEventListener("DOMContentLoaded", function () {
-    // Wait for a user action before speaking
-    document.body.addEventListener("click", function () {
+    // Add event listener for first click only
+    document.body.addEventListener("click", function handleClick() {
         speakText("Welcome to VisiLearn. Press 1 to convert text to speech. Press 2 to convert text to Braille. Press 3 to perform object identification. Press 4 to convert text to speech. Press 5 to summarize text.");
-    }, { once: true }); // Ensures it only triggers once
+        
+        // Remove event listener after first click
+        document.body.removeEventListener("click", handleClick);
+    }, { once: true }); // Ensures it runs only once
 });
 
 function speakText(text) {
     if ('speechSynthesis' in window) {
-        window.speechSynthesis.cancel(); // Stop any ongoing speech
-
+        window.speechSynthesis.cancel();
         const speech = new SpeechSynthesisUtterance(text);
         speech.rate = 1;
         speech.pitch = 1;
