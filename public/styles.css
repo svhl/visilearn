@@ -1,4 +1,4 @@
-/* Custom Pastel Color Theme */
+/* Use the same pastel color theme */
 :root {
     --pastel-blue: hsl(210, 35%, 57%);
     --pastel-green: #76e376;
@@ -10,100 +10,81 @@
     --hover-green: #5fd35f;
 }
 
-/* Primary Background and Text Effects */
-.bg-primary-custom {
-    background: linear-gradient(45deg, var(--pastel-blue), var(--hover-blue));
-    transition: background 0.5s ease;
+/* Apply Background and Center the Content */
+body {
+    font-family: 'Arial', sans-serif;
+    background-color: var(--pastel-light);
+    color: var(--pastel-dark);
+    text-align: center;
+    padding: 40px;
 }
 
-.bg-primary-custom:hover {
-    background: linear-gradient(45deg, var(--hover-blue), var(--pastel-blue));
-}
-
-.text-primary-custom {
+/* Style the main heading */
+h1 {
+    font-size: 2.2em;
     color: var(--pastel-dark);
     transition: color 0.3s ease;
 }
 
-.text-primary-custom:hover {
+h1:hover {
     color: var(--pastel-purple);
 }
 
-/* Buttons with Dynamic Hover Effects */
-.btn-primary-custom {
+/* Style the button with the same theme */
+button {
     background: linear-gradient(45deg, var(--pastel-blue), var(--pastel-green));
     border: none;
     color: white;
-    padding: 10px 20px;
+    padding: 12px 24px;
     font-size: 16px;
+    border-radius: 8px;
+    cursor: pointer;
     transition: all 0.3s ease;
     position: relative;
     overflow: hidden;
 }
 
-.btn-primary-custom::before {
-    content: "";
-    position: absolute;
-    top: 0;
-    left: -100%;
-    width: 100%;
-    height: 100%;
+/* Button hover effect */
+button:hover {
     background: linear-gradient(45deg, var(--hover-blue), var(--hover-green));
-    transition: left 0.3s ease;
-    z-index: 0;
+    transform: scale(1.05);
 }
 
-.btn-primary-custom:hover::before {
-    left: 0;
+/* Text Highlight Effects */
+p {
+    font-size: 18px;
+    margin-top: 15px;
 }
 
-.btn-primary-custom span {
-    position: relative;
-    z-index: 1;
-}
-
-/* Secondary Color Effects */
-.text-secondary-custom {
-    color: var(--pastel-green);
+span {
+    font-weight: bold;
+    color: var(--pastel-blue);
     transition: color 0.3s ease;
 }
 
-.text-secondary-custom:hover {
-    color: var(--hover-green);
+span:hover {
+    color: var(--hover-blue);
 }
 
-.bg-light-custom {
-    background-color: var(--pastel-light);
-    transition: background 0.3s ease;
-}
-
-/* General Styles */
-body {
-    font-family: Arial, sans-serif;
-    background-color: var(--pastel-light);
-    transition: background 0.3s ease;
-}
-
-section {
-    padding: 60px 0;
+/* Add card-style effects for the output section */
+.card {
+    background: white;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    padding: 20px;
+    margin: 20px auto;
+    width: 60%;
     transition: all 0.3s ease;
 }
 
-h1, h2 {
-    color: var(--pastel-dark);
-    transition: color 0.3s ease;
+.card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+    background: linear-gradient(45deg, var(--pastel-blue), var(--pastel-green));
+    color: white;
 }
 
-h1:hover, h2:hover {
-    color: var(--pastel-purple);
-}
-
-/* Navbar & Footer Enhancements */
-.navbar {
-    margin-bottom: 30px;
-    transition: background 0.3s ease;
-}
-
+/* Footer to match the Home Page */
 footer {
     margin-top: 30px;
     background: linear-gradient(45deg, var(--pastel-dark), var(--hover-blue));
@@ -114,50 +95,4 @@ footer {
 
 footer:hover {
     background: linear-gradient(45deg, var(--hover-blue), var(--pastel-dark));
-}
-
-/* Card Animations */
-.card {
-    border: none;
-    border-radius: 10px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    transition: transform 0.3s ease, box-shadow 0.3s ease;
-    background: white;
-    overflow: hidden;
-}
-
-.card:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
-    background: linear-gradient(45deg, var(--pastel-blue), var(--pastel-green));
-    color: white;
-}
-
-.card-body {
-    padding: 30px;
-    transition: all 0.3s ease;
-}
-
-/* Form Controls */
-.form-control {
-    border: 1px solid var(--pastel-gray);
-    border-radius: 5px;
-    padding: 10px;
-    transition: border-color 0.3s ease, box-shadow 0.3s ease;
-}
-
-.form-control:focus {
-    border-color: var(--hover-blue);
-    box-shadow: 0 0 10px rgba(111, 163, 247, 0.5);
-}
-
-/* Button Enhancements */
-.btn {
-    border-radius: 5px;
-    transition: all 0.3s ease;
-}
-
-.btn:hover {
-    opacity: 0.9;
-    transform: scale(1.05);
 }
