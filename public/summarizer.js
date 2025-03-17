@@ -1,115 +1,170 @@
+// add event listener to start button
 document.getElementById("start").addEventListener("click", startVoiceInput);
 
-// Listen for keyboard events
+// listen for key presses
 document.addEventListener("keydown", (event) => {
+	// go home
 	if (event.key === "1") {
-		speak("Press 1 to go back to the main screen.\
-			Press 2 to convert a text file to speech.\
-			Press 3 to convert a text file to Braille.\
-			Press 0 to stop voice playback.");
-	} else if (event.key === "2") {
-		startVoiceInput();
-	} else if (event.key === "3") {
-		convertToBraille();
-	} else if (event.key === "0") {
+		window.speechSynthesis.cancel();
+		window.location.href = "index.html";
+	}
+
+	// stop speech
+	else if (event.key === "0") {
 		stopSpeech();
+	}
+
+	// read voice input from user
+	else if (event.key === "2") {
+		startVoiceInput();
+	}
+
+	// play help
+	else if (event.code == "Space") {
+		speak(
+			"Summarizer.\
+			Press 1 to go back to the main screen.\
+			Press 2 to convert a text file to speech.\
+			Press 0 to stop voice input and playback."
+		);
 	}
 });
 
+// speech to text for input
 function startVoiceInput() {
-	const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+	// check if browser supports WebSpeech API
+	// chromium based browsers support it
+	// firefox doesn't
+	window.speechSynthesis.cancel();
+	const SpeechRecognition =
+		window.SpeechRecognition || window.webkitSpeechRecognition;
 	if (!SpeechRecognition) {
 		alert("Web Speech API not supported in this browser.");
 		return;
 	}
 
+	// create new recognition object
 	const recognition = new SpeechRecognition();
+	// store recognition object globally
+	// need to use in stopSpeech fn
+	window.recognition = recognition;
 	recognition.lang = "en-US";
+	// prevents sentences for file names
 	recognition.continuous = false;
+	// only send final result
 	recognition.interimResults = false;
+	// only send one result
 	recognition.maxAlternatives = 1;
 
+	// display voice recognition starts
 	recognition.onstart = () => {
-		document.getElementById("output").textContent = "Listening...";
 		document.getElementById("filename").textContent = "Listening...";
 	};
 
+	// when error
 	recognition.onerror = (event) => {
-		document.getElementById("output").textContent = "Error: " + event.error;
-		document.getElementById("filename").textContent = "Error";
+		document.getElementById("filename").textContent =
+			"An error has occured.";
+		speak("An error has occured. Try again.");
 	};
 
+	// when speech recognized
 	recognition.onresult = (event) => {
+		// retrieve first result of set of results (only 1 since no alternative)
+		// remove trailing whitespace
 		let filename = event.results[0][0].transcript.trim();
-		filename = filename.replace(/\.$/, ""); // Remove trailing period if any
-		filename += ".txt";
-		document.getElementById("filename").textContent = filename; // Show corrected filename
+		// regex for removing trailing periods
+		filename = filename.replace(/\.$/, "");
 
-		document.getElementById("output").textContent = "Checking file...";
+		// Try both .txt and .docx extensions
+		const possibleFilenames = [`${filename}.txt`, `${filename}.docx`];
 
+		// display filename attempt
+		document.getElementById("filename").textContent = `Found ${filename}`;
+
+		// send json request to check file in server.js
 		fetch("http://localhost:3000/check-file", {
 			method: "POST",
 			headers: { "Content-Type": "application/json" },
-			body: JSON.stringify({ filename }),
+			body: JSON.stringify({ filename, fuzzy: true }), // Enable fuzzy search
 		})
-		.then((res) => res.json())
-		.then((data) => {
-			if (data.error) {
-				document.getElementById("output").textContent = data.error;
-				speak(data.error);
-			} else {
-				document.getElementById("output").textContent = data.summary;
-				speak(data.summary);
-			}
-		})
-		.catch(() => {
-			document.getElementById("output").textContent = "Server error.";
-			speak("Server error.");
-		});
+			.then((res) => res.json())
+			.then((data) => {
+				// if server returns error
+				// display error
+				// speak error
+				if (data.error) {
+					document.getElementById("output").textContent = data.error;
+					speak(data.error);
+				}
+
+				// handle docx content
+				else if (data.docxContent) {
+					document.getElementById("output").textContent =
+						data.docxContent;
+					speak(data.docxContent);
+				}
+
+				// display output
+				// speak output
+				else {
+					document.getElementById("output").textContent =
+						data.summary;
+					speak(data.summary);
+				}
+			})
+
+			// if server itself fails
+			// display error
+			.catch(() => {
+				document.getElementById("output").textContent =
+					"A server error has occured.";
+				speak("A server error has occured. Try again.");
+			});
 	};
 
+	// start recognition only after defining above fns
 	recognition.start();
 }
 
-function convertToBraille() {
-	const filename = document.getElementById("filename").textContent;
-	if (filename === "Waiting..." || filename === "Listening..." || filename === "Error") {
-		speak("No valid file recognized. Please try again.");
-		return;
+// text to speech for output
+function speak(text) {
+	// Split text into sentences based on periods
+	const chunks = text.match(/[^.!?]+[.!?]/g) || [text]; // Ensure at least one chunk
+	let index = 0;
+
+	function speakNextChunk() {
+		if (index < chunks.length) {
+			const speech = new SpeechSynthesisUtterance(chunks[index].trim());
+			speech.lang = "en-US";
+			speech.onend = () => {
+				index++;
+				speakNextChunk(); // Speak the next chunk after the current one finishes
+			};
+			window.speechSynthesis.speak(speech);
+		}
 	}
 
-	document.getElementById("output").textContent = "Converting to Braille...";
-
-	fetch("http://localhost:3000/convert-braille", {
-		method: "POST",
-		headers: { "Content-Type": "application/json" },
-		body: JSON.stringify({ filename }),
-	})
-	.then((res) => res.blob())
-	.then((blob) => {
-		const url = URL.createObjectURL(blob);
-		const a = document.createElement("a");
-		a.href = url;
-		a.download = filename.replace(".txt", "_braille.txt");
-		document.body.appendChild(a);
-		a.click();
-		document.body.removeChild(a);
-		URL.revokeObjectURL(url);
-		document.getElementById("output").textContent = "Braille file downloaded.";
-		speak("Braille file has been downloaded.");
-	})
-	.catch(() => {
-		document.getElementById("output").textContent = "Error converting to Braille.";
-		speak("Error converting to Braille.");
-	});
+	speakNextChunk();
 }
 
-function speak(text) {
-	const speech = new SpeechSynthesisUtterance(text);
-	speech.lang = "en-US";
-	window.speechSynthesis.speak(speech);
-}
-
+// stop any ongoing speech
 function stopSpeech() {
-	window.speechSynthesis.cancel(); // Stops any ongoing speech
+	window.speechSynthesis.cancel();
+
+	// Check if voice recognition exists before stopping it
+	if (window.recognition) {
+		window.recognition.stop();
+
+		// Update UI to indicate that recognition has stopped
+		document.getElementById("filename").textContent = "Waiting for file...";
+
+		// Reset the recognition variable to avoid conflicts
+		window.recognition = null;
+	}
 }
+
+window.addEventListener("load", () => {
+	window.speechSynthesis.cancel();
+	speak("Summarizer.");
+});

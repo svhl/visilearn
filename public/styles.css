@@ -1,98 +1,108 @@
-/* Use the same pastel color theme */
-:root {
-    --pastel-blue: hsl(210, 35%, 57%);
-    --pastel-green: #76e376;
-    --pastel-light: #ffffff;
-    --pastel-dark: #397072;
-    --pastel-gray: #b7b3b3;
-    --pastel-purple: #c9a7eb;
-    --hover-blue: #6fa3f7;
-    --hover-green: #5fd35f;
-}
-
-/* Apply Background and Center the Content */
 body {
-    font-family: 'Arial', sans-serif;
-    background-color: var(--pastel-light);
-    color: var(--pastel-dark);
-    text-align: center;
-    padding: 40px;
+	margin: 0;
+	background-color: #ffffff;
+	color: #000000;
+	text-align: center;
 }
 
-/* Style the main heading */
-h1 {
-    font-size: 2.2em;
-    color: var(--pastel-dark);
-    transition: color 0.3s ease;
+.navbar {
+	background-color: #ffffff;
+	padding: 15px;
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	position: fixed;
+	width: 100%;
+	top: 0;
+	left: 0;
+	font-family: "Inter", serif;
 }
 
-h1:hover {
-    color: var(--pastel-purple);
+.navbar a {
+	color: white;
+	text-decoration: none;
+	margin: 0 15px;
 }
 
-/* Style the button with the same theme */
-button {
-    background: linear-gradient(45deg, var(--pastel-blue), var(--pastel-green));
-    border: none;
-    color: white;
-    padding: 12px 24px;
-    font-size: 16px;
-    border-radius: 8px;
-    cursor: pointer;
-    transition: all 0.3s ease;
-    position: relative;
-    overflow: hidden;
+.navbar .left {
+	margin-left: 0px;
+	font-weight: bold;
+	font-size: 20px;
 }
 
-/* Button hover effect */
-button:hover {
-    background: linear-gradient(45deg, var(--hover-blue), var(--hover-green));
-    transform: scale(1.05);
+.navbar .right {
+	margin-right: 15px;
 }
 
-/* Text Highlight Effects */
-p {
-    font-size: 18px;
-    margin-top: 15px;
+.navbar .right a {
+	color: rgba(0, 0, 0, 0.8);
 }
 
-span {
-    font-weight: bold;
-    color: var(--pastel-blue);
-    transition: color 0.3s ease;
+.main {
+	margin-top: 80px;
+	padding: 20px;
 }
 
-span:hover {
-    color: var(--hover-blue);
+.icon {
+	width: 50px;
+	height: 50px;
+	background-color: gray;
+	margin: 0 auto;
+	border-radius: 50%;
 }
 
-/* Add card-style effects for the output section */
-.card {
-    background: white;
-    border-radius: 10px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    padding: 20px;
-    margin: 20px auto;
-    width: 60%;
-    transition: all 0.3s ease;
+.section {
+	margin: 150px auto;
 }
 
-.card:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
-    background: linear-gradient(45deg, var(--pastel-blue), var(--pastel-green));
-    color: white;
+.section h2 {
+	font-family: "Poppins", sans-serif;
 }
 
-/* Footer to match the Home Page */
-footer {
-    margin-top: 30px;
-    background: linear-gradient(45deg, var(--pastel-dark), var(--hover-blue));
-    color: white;
-    padding: 20px 0;
-    transition: background 0.5s ease;
+.section p {
+	font-family: "Inter", sans-serif;
 }
 
-footer:hover {
-    background: linear-gradient(45deg, var(--hover-blue), var(--pastel-dark));
+.section button {
+	font-family: "Inter", sans-serif;
+	background: linear-gradient(to right, #232526, #414345);
+	color: white;
+	padding: 10px 20px;
+	border: none;
+	cursor: pointer;
+	margin-top: 10px;
+	border-radius: 20px;
+}
+
+.section button:hover {
+	background: linear-gradient(to right, #29323c, #485563);
+}
+
+#heading {
+	margin-top: 100px;
+}
+
+#heading h1 {
+	font-family: "Poppins", sans-serif;
+	font-size: 50px;
+	background: linear-gradient(to right, #283c86, #45a247);
+	background-clip: text;
+	-webkit-background-clip: text;
+	-webkit-text-fill-color: transparent;
+}
+
+#heading h2 {
+	font-family: "Inter", sans-serif;
+	font-size: 16px;
+	font-weight: 400;
+	margin-top: -15px;
+	padding-bottom: 50px;
+}
+
+#speech {
+	margin-top: 100px;
+}
+
+#translate {
+	margin-bottom: 50px;
 }
