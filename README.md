@@ -4,12 +4,17 @@ An all-in-one learning platform for the visually impaired with easy-to-use voice
 
 ## Features
 
-- Convert **text to speech** with custom speech rate, accent, and more
-- Convert **text to Braille**, ready to be printed or used with Braille displays
-- **Object detection** to describe diagrams or charts in images via an LLM
-- **Summarize** text using a fast and simple algorithm
-- **Translate** text from supported languages to English
-- **Shortcut navigation with voice input** can be used by the visually impaired
+💬 Convert **text to speech** with custom speech rate, accent, and more
+
+📖 Convert **text to Braille**, ready to be printed or used with Braille displays
+
+👁️ **Object detection** to describe diagrams or charts in images via an LLM
+
+📚 **Summarize** text using a fast and simple algorithm
+
+🌎 **Translate** text from supported languages to English
+
+🗣️ **Shortcut navigation with voice input** can be used by the visually impaired
 
 ## Tech stack
 
