@@ -1,0 +1,101 @@
+body {
+    margin: 0;
+    background-color: #ffffff;
+    color: #000000;
+    text-align: center;
+    font-family: Arial, sans-serif;
+    padding: 20px;
+}
+
+/* Navbar Styling */
+.navbar {
+    background-color: #ffffff;
+    padding: 15px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    position: fixed;
+    width: 100%;
+    top: 0;
+    left: 0;
+    font-family: "Inter", serif;
+}
+
+.navbar a {
+    color: rgba(0, 0, 0, 0.8);
+    text-decoration: none;
+    margin: 0 15px;
+}
+
+.navbar .left {
+    font-weight: bold;
+    font-size: 20px;
+}
+
+.navbar .right {
+    margin-right: 15px;
+}
+
+/* Heading Styling */
+h2 {
+    font-family: "Poppins", sans-serif;
+    font-size: 40px;
+    background: linear-gradient(to right, #283c86, #45a247);
+    background-clip: text;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    margin-top: 100px;
+    padding: 20px;
+}
+
+/* Text Area */
+textarea {
+    width: 80%;
+    height: 100px;
+    padding: 10px;
+    font-size: 16px;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+    margin-top: 20px;
+}
+
+/* Button Styling */
+button {
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    cursor: pointer;
+    border-radius: 20px;
+    font-family: "Inter", sans-serif;
+    background: linear-gradient(to right, #232526, #414345);
+    margin-top: 10px;
+}
+
+button:hover {
+    background: linear-gradient(to right, #29323c, #485563);
+}
+
+/* Braille Output */
+pre {
+    background: #f4f4f4;
+    padding: 10px;
+    font-size: 18px;
+    border-radius: 5px;
+    width: 80%;
+    margin: auto;
+    margin-top: 20px;
+}
+
+/* Download Link */
+#downloadLink {
+    display: block;
+    margin-top: 20px;
+    font-size: 18px;
+    font-family: "Inter", sans-serif;
+    color: #283c86;
+    text-decoration: none;
+}
+
+#downloadLink:hover {
+    text-decoration: underline;
+}
