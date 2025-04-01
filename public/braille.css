@@ -1,13 +1,10 @@
-/* General Body Styling */
 body {
 	margin: 0;
 	background-color: #ffffff;
 	color: #000000;
 	text-align: center;
-	font-family: "Inter", sans-serif;
 }
 
-/* Navbar Styling */
 .navbar {
 	background-color: #ffffff;
 	padding: 15px;
@@ -22,24 +19,26 @@ body {
 }
 
 .navbar a {
-	color: rgba(0, 0, 0, 0.8);
+	color: white;
 	text-decoration: none;
 	margin: 0 15px;
 }
 
-/* Left Navbar (VisiLearn logo) */
 .navbar .left {
+	margin-left: 0px;
 	font-weight: bold;
 	font-size: 20px;
 }
 
-/* Right Navbar (Links) */
 .navbar .right {
 	margin-right: 15px;
 }
 
-/* Heading Styling */
-h2 {
+.navbar .right a {
+	color: rgba(0, 0, 0, 0.8);
+}
+
+h1 {
 	font-family: "Poppins", sans-serif;
 	font-size: 50px;
 	background: linear-gradient(to right, #283c86, #45a247);
@@ -50,28 +49,14 @@ h2 {
 	padding: 20px;
 }
 
-/* Text Area Styling */
-textarea {
-	width: 80%;
-	height: 100px;
-	padding: 10px;
-	font-size: 18px;
-	border-radius: 5px;
-	border: 2px solid #ccc;
-	margin-top: 20px;
-	font-family: "Inter", sans-serif;
-}
-
-/* Button Styling */
 button {
 	color: white;
-	padding: 12px 25px;
+	padding: 10px 20px;
 	border: none;
 	cursor: pointer;
+	margin-top: -10px;
 	border-radius: 20px;
 	font-family: "Inter", sans-serif;
-	font-size: 18px;
-	margin-top: 10px;
 	background: linear-gradient(to right, #232526, #414345);
 }
 
@@ -79,35 +64,21 @@ button:hover {
 	background: linear-gradient(to right, #29323c, #485563);
 }
 
-/* Braille Output Styling */
-pre {
-	background: #f4f4f4;
-	padding: 15px;
-	font-size: 20px;
-	border-radius: 8px;
-	width: 80%;
-	margin: auto;
+#filename {
+	display: block;
+	margin-top: 30px;
+	font-family: "Inter", sans-serif;
+	font-style: italic;
+}
+
+#output {
+	display: block;
 	margin-top: 25px;
-	overflow-x: auto;
 	font-family: "Poppins", sans-serif;
 	color: rgba(0, 0, 0, 0.8);
-	text-align: left;
 	padding-left: 300px;
 	padding-right: 300px;
+	font-size: 25px;
+	text-align: left;
 	padding-bottom: 45px;
-}
-
-/* Download Link Styling */
-#downloadLink {
-	display: block;
-	margin-top: 20px;
-	font-size: 20px;
-	font-family: "Inter", sans-serif;
-	color: #283c86;
-	text-decoration: none;
-	font-weight: bold;
-}
-
-#downloadLink:hover {
-	text-decoration: underline;
 }
