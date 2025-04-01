@@ -1,38 +1,128 @@
-const express = require('express');
-const fs = require('fs');
-const cors = require('cors');
-const app = express();
-const port = 5000;
+// Initialize speech synthesis
+const synth = window.speechSynthesis;
 
-app.use(express.json());
-app.use(cors());
-app.use(express.static('public'));
+// Add event listener to start button
+document.getElementById("startVoice").addEventListener("click", startVoiceInput);
 
-// Braille Mapping
-const brailleMap = {
-  'a': '\u2801', 'b': '\u2803', 'c': '\u2809', 'd': '\u2819', 'e': '\u2811',
-  'f': '\u280B', 'g': '\u281B', 'h': '\u2813', 'i': '\u280A', 'j': '\u281A',
-  'k': '\u2805', 'l': '\u2807', 'm': '\u280D', 'n': '\u281D', 'o': '\u2815',
-  'p': '\u280F', 'q': '\u281F', 'r': '\u2817', 's': '\u280E', 't': '\u281E',
-  'u': '\u2825', 'v': '\u2827', 'w': '\u283A', 'x': '\u282D', 'y': '\u283D', 'z': '\u2835',
-  ' ': ' ', '.': '\u2832', ',': '\u2802', '?': '\u2822', '!': '\u2816'
-};
-
-// Convert Text to Braille
-const convertToBraille = (text) => {
-  return text.toLowerCase().split('').map(char => brailleMap[char] || char).join('');
-};
-
-app.post('/convert', (req, res) => {
-  const { text } = req.body;
-  if (!text) return res.status(400).json({ error: 'No text provided' });
-  
-  const brailleText = convertToBraille(text);
-  const filePath = `./public/output.brl`;
-  fs.writeFileSync(filePath, brailleText);
-  res.json({ brailleText, filePath: '/output.brl' });
+// Keyboard shortcuts
+document.addEventListener("keydown", (event) => {
+    // Go home
+    if (event.key === "1") {
+        synth.cancel();
+        window.location.href = "index.html";
+    }
+    // Stop speech
+    else if (event.key === "0") {
+        stopSpeech();
+    }
+    // Start voice input
+    else if (event.key === "2") {
+        startVoiceInput();
+    }
+    // Play help
+    else if (event.code === "Space") {
+        speak(
+            "Braille Converter. " +
+            "Press 1 to go back to the main screen. " +
+            "Press 2 to convert a file to Braille. " +
+            "Press 0 to stop voice input and playback."
+        );
+    }
 });
 
-app.listen(port, () => {
-  console.log(`Server running on http://localhost:${port}`);
+// Voice input function
+function startVoiceInput() {
+    synth.cancel();
+    const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+    
+    if (!SpeechRecognition) {
+        alert("Web Speech API not supported in this browser.");
+        return;
+    }
+
+    const recognition = new SpeechRecognition();
+    window.recognition = recognition;
+    recognition.lang = "en-US";
+    recognition.continuous = false;
+    recognition.interimResults = false;
+    recognition.maxAlternatives = 1;
+
+    recognition.onstart = () => {
+        document.getElementById("filename").textContent = "Listening...";
+    };
+
+    recognition.onerror = (event) => {
+        document.getElementById("filename").textContent = "Error occurred";
+        speak("An error occurred. Please try again.");
+    };
+
+    recognition.onresult = (event) => {
+        let filename = event.results[0][0].transcript.trim();
+        filename = filename.replace(/\.$/, ""); // Remove trailing period
+        
+        document.getElementById("filename").textContent = `Processing: ${filename}`;
+        convertFileToBraille(filename);
+    };
+
+    recognition.start();
+}
+
+// Convert file to Braille
+async function convertFileToBraille(filename) {
+    try {
+        const response = await fetch("/process-file", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ 
+                filename: filename,
+                action: "convert-to-braille"
+            })
+        });
+
+        const data = await response.json();
+        
+        if (data.error) {
+            document.getElementById("brailleOutput").textContent = data.error;
+            speak(data.error);
+            return;
+        }
+
+        document.getElementById("brailleOutput").textContent = data.brailleText;
+        const downloadLink = document.getElementById("downloadLink");
+        downloadLink.href = data.downloadLink;
+        downloadLink.style.display = "inline-block";
+        
+        // Auto-download after short delay
+        setTimeout(() => {
+            downloadLink.click();
+            speak("Braille file has been downloaded");
+        }, 500);
+
+    } catch (error) {
+        document.getElementById("brailleOutput").textContent = "Error processing file";
+        speak("An error occurred while processing the file");
+        console.error(error);
+    }
+}
+
+// Text-to-speech function
+function speak(text) {
+    const utterance = new SpeechSynthesisUtterance(text);
+    utterance.lang = "en-US";
+    synth.speak(utterance);
+}
+
+// Stop speech function
+function stopSpeech() {
+    synth.cancel();
+    if (window.recognition) {
+        window.recognition.stop();
+        document.getElementById("filename").textContent = "Voice input stopped";
+    }
+}
+
+// Initial help message
+window.addEventListener("load", () => {
+    synth.cancel();
+    speak("Braille Converter loaded. Press Space for help.");
 });
