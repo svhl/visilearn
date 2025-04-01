@@ -4,33 +4,16 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Braille Converter</title>
-   <link rel="stylesheet" href="braille.css">
-
+    <link rel="stylesheet" href="braille.css">
 </head>
-<body>
-    <h2>Braille Converter</h2>
-    <textarea id="inputText" placeholder="Enter text here..."></textarea>
-    <button onclick="convertToBraille()">Convert</button>
-    <pre id="brailleOutput"></pre>
-    <a id="downloadLink" style="display:none;" download="output.brl">Download Braille File</a>
-
-    <script>
-        function convertToBraille() {
-            const text = document.getElementById('inputText').value;
-            fetch('http://localhost:5000/convert', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ text })
-            })
-            .then(response => response.json())
-            .then(data => {
-                document.getElementById('brailleOutput').textContent = data.brailleText;
-                const link = document.getElementById('downloadLink');
-                link.href = data.filePath;
-                link.style.display = 'block';
-                link.textContent = 'Download Braille File';
-            });
-        }
-    </script>
+<body class="braille-body">
+    <div class="braille-container">
+        <h1 class="braille-heading">Braille Converter</h1>
+        <button id="startVoice" class="braille-button">Start Voice Input</button>
+        <p class="braille-paragraph"><strong class="braille-strong">Recognized Filename:</strong> <span id="filename">Waiting...</span></p>
+        <p class="braille-paragraph"><strong class="braille-strong">Braille Output:</strong> <span id="brailleOutput">Waiting for input...</span></p>
+        <a id="downloadLink" class="braille-download" style="display:none;" download="braille_output.brl">Download Braille File</a>
+    </div>
+    <script src="braille.js"></script>
 </body>
 </html>
