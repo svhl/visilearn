@@ -166,5 +166,5 @@ function stopSpeech() {
 
 window.addEventListener("load", () => {
 	window.speechSynthesis.cancel();
-	speak("Summarizer.");
+	speak("Summarizer.Press Space for Help");
 });
