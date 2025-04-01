@@ -5,17 +5,209 @@ const os = require("os");
 const cors = require("cors");
 const mammoth = require("mammoth");
 
-// Braille Mapping
-const brailleMap = {
-    'a': '⠁', 'b': '⠃', 'c': '⠉', 'd': '⠙', 'e': '⠑',
-    'f': '⠋', 'g': '⠛', 'h': '⠓', 'i': '⠊', 'j': '⠚',
-    'k': '⠅', 'l': '⠇', 'm': '⠍', 'n': '⠝', 'o': '⠕',
-    'p': '⠏', 'q': '⠟', 'r': '⠗', 's': '⠎', 't': '⠞',
-    'u': '⠥', 'v': '⠧', 'w': '⠺', 'x': '⠭', 'y': '⠽', 'z': '⠵',
-    ' ': ' ', '.': '⠲', ',': '⠂', '?': '⠦', '!': '⠖', "'": '⠄',
-    '0': '⠴', '1': '⠂', '2': '⠆', '3': '⠒', '4': '⠲',
-    '5': '⠢', '6': '⠖', '7': '⠶', '8': '⠦', '9': '⠔'
+// Complete Braille Mappings for All Supported Languages
+const brailleMaps = {
+    english: {
+        'a': '⠁', 'b': '⠃', 'c': '⠉', 'd': '⠙', 'e': '⠑',
+        'f': '⠋', 'g': '⠛', 'h': '⠓', 'i': '⠊', 'j': '⠚',
+        'k': '⠅', 'l': '⠇', 'm': '⠍', 'n': '⠝', 'o': '⠕',
+        'p': '⠏', 'q': '⠟', 'r': '⠗', 's': '⠎', 't': '⠞',
+        'u': '⠥', 'v': '⠧', 'w': '⠺', 'x': '⠭', 'y': '⠽', 'z': '⠵',
+        ' ': ' ', '.': '⠲', ',': '⠂', '?': '⠦', '!': '⠖', "'": '⠄',
+        '0': '⠴', '1': '⠂', '2': '⠆', '3': '⠒', '4': '⠲',
+        '5': '⠢', '6': '⠖', '7': '⠶', '8': '⠦', '9': '⠔'
+    },
+    french: {
+        'a': '⠁', 'b': '⠃', 'c': '⠉', 'd': '⠙', 'e': '⠑',
+        'f': '⠋', 'g': '⠛', 'h': '⠓', 'i': '⠊', 'j': '⠚',
+        'k': '⠅', 'l': '⠇', 'm': '⠍', 'n': '⠝', 'o': '⠕',
+        'p': '⠏', 'q': '⠟', 'r': '⠗', 's': '⠎', 't': '⠞',
+        'u': '⠥', 'v': '⠧', 'w': '⠺', 'x': '⠭', 'y': '⠽', 'z': '⠵',
+        'à': '⠷', 'â': '⠡', 'ç': '⠩', 'é': '⠿', 'è': '⠮', 'ê': '⠣',
+        'ë': '⠫', 'î': '⠻', 'ï': '⠳', 'ô': '⠹', 'ù': '⠾', 'û': '⠢', 'ü': '⠬'
+    },
+    spanish: {
+        'a': '⠁', 'b': '⠃', 'c': '⠉', 'd': '⠙', 'e': '⠑',
+        'f': '⠋', 'g': '⠛', 'h': '⠓', 'i': '⠊', 'j': '⠚',
+        'k': '⠅', 'l': '⠇', 'm': '⠍', 'n': '⠝', 'o': '⠕',
+        'p': '⠏', 'q': '⠟', 'r': '⠗', 's': '⠎', 't': '⠞',
+        'u': '⠥', 'v': '⠧', 'w': '⠺', 'x': '⠭', 'y': '⠽', 'z': '⠵',
+        'á': '⠷', 'é': '⠿', 'í': '⠌', 'ó': '⠬', 'ú': '⠾', 'ü': '⠳',
+        'ñ': '⠈⠝', '¿': '⠢', '¡': '⠖'
+    },
+    hindi: {
+        // Vowels
+        'अ': '⠁', 'आ': '⠜', 'इ': '⠊', 'ई': '⠔', 'उ': '⠥',
+        'ऊ': '⠳', 'ऋ': '⠻', 'ए': '⠢', 'ऐ': '⠿', 'ओ': '⠕',
+        'औ': '⠪',
+        
+        // Consonants
+        'क': '⠅', 'ख': '⠨⠅', 'ग': '⠛', 'घ': '⠨⠛', 'ङ': '⠬',
+        'च': '⠉', 'छ': '⠨⠉', 'ज': '⠚', 'झ': '⠨⠚', 'ञ': '⠭',
+        'ट': '⠾', 'ठ': '⠨⠾', 'ड': '⠫', 'ढ': '⠨⠫', 'ण': '⠼',
+        'त': '⠞', 'थ': '⠨⠞', 'द': '⠙', 'ध': '⠨⠙', 'न': '⠝',
+        'प': '⠏', 'फ': '⠨⠏', 'ब': '⠃', 'भ': '⠨⠃', 'म': '⠍',
+        'य': '⠽', 'र': '⠗', 'ल': '⠇', 'व': '⠧', 'श': '⠩',
+        'ष': '⠱', 'स': '⠎', 'ह': '⠓',
+        
+        // Matras (Vowel signs)
+        'ा': '⠜', 'ि': '⠊', 'ी': '⠔', 'ु': '⠥', 'ू': '⠳',
+        'ृ': '⠻', 'े': '⠢', 'ै': '⠿', 'ो': '⠕', 'ौ': '⠪',
+        
+        // Punctuation/Numbers
+        '।': '⠲', '॥': '⠶', '्': '⠈', 'ं': '⠰', 'ः': '⠆',
+        '०': '⠴', '१': '⠂', '२': '⠆', '३': '⠒', '४': '⠲',
+        '५': '⠢', '६': '⠖', '७': '⠶', '८': '⠦', '९': '⠔'
+    },
+    malayalam: {
+        // Vowels and vowel signs
+        'അ': '⠁', 'ആ': '⠜', 'ഇ': '⠊', 'ഈ': '⠔', 'ഉ': '⠥',
+        'ഊ': '⠳', 'ഋ': '⠻', 'എ': '⠢', 'ഏ': '⠮', 'ഐ': '⠿',
+        'ഒ': '⠕', 'ഓ': '⠪', 'ഔ': '⠔⠕',
+        'ാ': '⠜', 'ി': '⠊', 'ീ': '⠔', 'ു': '⠥', 'ൂ': '⠳',
+        'ൃ': '⠻', 'െ': '⠢', 'േ': '⠮', 'ൈ': '⠿', 'ൊ': '⠕',
+        'ോ': '⠪', 'ൌ': '⠔⠕', 'ൗ': '⠕⠈',
+        
+        // Consonants
+        'ക': '⠅', 'ഖ': '⠨⠅', 'ഗ': '⠛', 'ഘ': '⠨⠛', 'ങ': '⠬',
+        'ച': '⠉', 'ഛ': '⠨⠉', 'ജ': '⠚', 'ഝ': '⠨⠚', 'ഞ': '⠭',
+        'ട': '⠾', 'ഠ': '⠨⠾', 'ഡ': '⠫', 'ഢ': '⠨⠫', 'ണ': '⠼',
+        'ത': '⠞', 'ഥ': '⠨⠞', 'ദ': '⠙', 'ധ': '⠨⠙', 'ന': '⠝',
+        'പ': '⠏', 'ഫ': '⠨⠏', 'ബ': '⠃', 'ഭ': '⠨⠃', 'മ': '⠍',
+        'യ': '⠽', 'ര': '⠗', 'ല': '⠇', 'വ': '⠧', 'ശ': '⠩',
+        'ഷ': '⠱', 'സ': '⠎', 'ഹ': '⠓', 'ള': '⠸', 'ഴ': '⠴',
+        'റ': '⠐⠗',
+        
+        // Chillu letters
+        'ൺ': '⠼⠈', 'ൻ': '⠝⠈', 'ർ': '⠗⠈', 'ൽ': '⠇⠈', 'ൾ': '⠸⠈', 'ൿ': '⠅⠈',
+        
+        // Other signs
+        '്': '⠈', 'ം': '⠰', 'ഃ': '⠆',
+        
+        // Punctuation
+        '।': '⠲', '॥': '⠶', 'ഽ': '⠐⠂',
+        
+        // Numbers
+        '൦': '⠴', '൧': '⠂', '൨': '⠆', '൩': '⠒', '൪': '⠲',
+        '൫': '⠢', '൬': '⠖', '൭': '⠶', '൮': '⠦', '൯': '⠔',
+        
+        // Special conjuncts
+        '്യ': '⠽⠈', '്ര': '⠗⠈', '്ല': '⠇⠈', '്വ': '⠧⠈'
+    }
 };
+
+// Language Detection Function
+function detectLanguage(text) {
+    const hindiChars = /[\u0900-\u097F]/;
+    const malayalamChars = /[\u0D00-\u0D7F]/;
+    const frenchChars = /[àâçéèêëîïôùûü]/i;
+    const spanishChars = /[áéíóúüñ¿¡]/i;
+    
+    if (hindiChars.test(text)) return 'hindi';
+    if (malayalamChars.test(text)) return 'malayalam';
+    if (frenchChars.test(text)) return 'french';
+    if (spanishChars.test(text)) return 'spanish';
+    return 'english';
+}
+
+// Helper Functions for Malayalam
+function isMalayalamVowelSign(char) {
+    return ['ാ', 'ി', 'ീ', 'ു', 'ൂ', 'ൃ', 'െ', 'േ', 'ൈ', 'ൊ', 'ോ', 'ൌ', 'ൗ'].includes(char);
+}
+
+function isMalayalamChillu(char) {
+    return ['ൺ', 'ൻ', 'ർ', 'ൽ', 'ൾ', 'ൿ'].includes(char);
+}
+
+// Enhanced Braille Conversion Function
+function convertToBraille(text) {
+    if (!text || typeof text !== 'string') return '';
+    
+    const language = detectLanguage(text);
+    const brailleMap = brailleMaps[language];
+    
+    console.log(`Detected language: ${language}`);
+    
+    // Special handling for Indian languages
+    if (language === 'hindi' || language === 'malayalam') {
+        let result = '';
+        for (let i = 0; i < text.length; i++) {
+            const char = text[i];
+            const nextChar = text[i+1];
+            
+            // Handle combined characters (consonant + vowel sign)
+            if (nextChar) {
+                // For Hindi
+                if (language === 'hindi' && isHindiVowelSign(nextChar)) {
+                    const combined = char + nextChar;
+                    if (brailleMap[combined]) {
+                        result += brailleMap[combined];
+                        i++; // Skip vowel sign
+                        continue;
+                    }
+                }
+                // For Malayalam
+                else if (language === 'malayalam' && isMalayalamVowelSign(nextChar)) {
+                    const combined = char + nextChar;
+                    if (brailleMap[combined]) {
+                        result += brailleMap[combined];
+                        i++; // Skip vowel sign
+                        continue;
+                    }
+                }
+            }
+            
+            // Handle Malayalam chillu letters
+            if (language === 'malayalam' && isMalayalamChillu(char)) {
+                result += brailleMap[char] || (brailleMap[char.normalize("NFD")[0]] + '⠈');
+                continue;
+            }
+            
+            // Handle standalone characters
+            result += brailleMap[char] || char;
+        }
+        return result;
+    }
+    
+    // Handle Spanish ñ
+    if (language === 'spanish') {
+        return text.toLowerCase().split('').map(char => {
+            if (char === 'ñ') return '⠈⠝';
+            if (char === '¿') return '⠢';
+            if (char === '¡') return '⠖';
+            return brailleMap[char] || char;
+        }).join('');
+    }
+    
+    // Standard conversion for other languages
+    return text.toLowerCase().split('').map(char => {
+        // Handle French accented characters
+        if (language === 'french') {
+            if (char === 'é') return '⠿';
+            if (char === 'è' || char === 'ê') return '⠮';
+            if (char === 'à') return '⠷';
+            if (char === 'ç') return '⠩';
+            if (char === 'ù' || char === 'û') return '⠾';
+            if (char === 'ï' || char === 'î') return '⠳';
+        }
+        return brailleMap[char] || char;
+    }).join('');
+}
+
+// Helper functions
+function isHindiVowelSign(char) {
+    return ['ा', 'ि', 'ी', 'ु', 'ू', 'ृ', 'े', 'ै', 'ो', 'ौ'].includes(char);
+}
+
+function isMalayalamVowelSign(char) {
+    return ['ാ', 'ി', 'ീ', 'ു', 'ൂ', 'ൃ', 'െ', 'േ', 'ൈ', 'ൊ', 'ോ', 'ൌ', 'ൗ'].includes(char);
+}
+
+function isMalayalamChillu(char) {
+    return ['ൺ', 'ൻ', 'ർ', 'ൽ', 'ൾ', 'ൿ'].includes(char);
+}
+
+
 
 const app = express();
 const PORT = 3000;
@@ -52,11 +244,6 @@ const summarizeText = (text) => {
         .slice(0, Math.ceil(sentences.length * 0.3))
         .map((s) => s.sentence)
         .join(" ");
-};
-
-// Convert Text to Braille
-const convertToBraille = (text) => {
-    return text.toLowerCase().split('').map(char => brailleMap[char] || char).join('');
 };
 
 // Unified File Processing Endpoint
@@ -109,10 +296,12 @@ app.post("/process-file", async (req, res) => {
 
         if (action === "convert-to-braille") {
             const brailleText = convertToBraille(fileContent);
+            const language = detectLanguage(fileContent);
             const outputPath = path.join(__dirname, "public", "braille_output.brl");
             await fs.writeFile(outputPath, brailleText);
             return res.json({ 
                 success: true,
+                language,
                 brailleText: brailleText,
                 downloadLink: "/braille_output.brl" 
             });
@@ -126,8 +315,7 @@ app.post("/process-file", async (req, res) => {
     }
 });
 
-// Backward compatibility for summarizer - SIMPLIFIED VERSION
-// Backward compatibility for summarizer - FIXED VERSION
+// Backward compatibility for summarizer
 app.post("/check-file", async (req, res) => {
     try {
         let { filename } = req.body;
@@ -153,7 +341,7 @@ app.post("/check-file", async (req, res) => {
         // Try to find an exact case-insensitive match
         const matchedIndex = lowerCaseFiles.indexOf(targetFilename);
         if (matchedIndex !== -1) {
-            filename = files[matchedIndex]; // Get the correctly capitalized filename
+            filename = files[matchedIndex];
         } else {
             // Fuzzy search: Find the closest match
             const closestMatch = files.find((file) =>
@@ -196,6 +384,7 @@ app.post("/check-file", async (req, res) => {
         return res.status(500).json({ error: "Error processing file" });
     }
 });
+
 // Direct Text to Braille Conversion
 app.post("/convert-to-braille", async (req, res) => {
     try {
@@ -205,11 +394,13 @@ app.post("/convert-to-braille", async (req, res) => {
         }
 
         const brailleText = convertToBraille(text);
+        const language = detectLanguage(text);
         const outputPath = path.join(__dirname, "public", "braille_output.brl");
         await fs.writeFile(outputPath, brailleText);
         
         res.json({ 
             success: true,
+            language,
             brailleText: brailleText,
             downloadLink: "/braille_output.brl" 
         });
