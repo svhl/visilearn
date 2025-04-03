@@ -12,18 +12,15 @@ document.addEventListener("keydown", (event) => {
 		startVoiceInput();
 	} else if (event.code == "Space") {
 		speak(
-			"Text to speech.\
+			"Translator.\
 			Press 1 to go back to the main screen.\
-			Press 2 to convert a file to speech.\
+			Press 2 to transalate a text file.\
 			Press 0 to stop voice input and playback."
 		);
 	}
 });
 
 function startVoiceInput() {
-	// check if browser supports WebSpeech API
-	// chromium based browsers support it
-	// firefox doesn't
 	window.speechSynthesis.cancel();
 	const SpeechRecognition =
 		window.SpeechRecognition || window.webkitSpeechRecognition;
@@ -35,64 +32,49 @@ function startVoiceInput() {
 	const recognition = new SpeechRecognition();
 	window.recognition = recognition;
 	recognition.lang = "en-US";
-	// prevents sentences for file names
 	recognition.continuous = false;
-	// only send final result
 	recognition.interimResults = false;
-	// only send one result
 	recognition.maxAlternatives = 1;
 
 	recognition.onstart = () => {
 		document.getElementById("filename").textContent = "Listening...";
 	};
 
-	recognition.onerror = (event) => {
-		document.getElementById("filename").textContent =
-			"An error has occured.";
+	recognition.onerror = () => {
+		document.getElementById("filename").textContent = "An error occurred.";
 	};
 
 	recognition.onresult = (event) => {
-		// retrieve first result of set of results (only 1 since no alternative)
-		// remove trailing whitespace
 		let filename = event.results[0][0].transcript.trim();
-		// regex for removing trailing periods
-		filename = filename.replace(/\.$/, "");
-
-		const possibleFilenames = [`${filename}.txt`, `${filename}.docx`];
+		filename = filename.replace(/\.$/, ""); // Remove trailing periods
 
 		document.getElementById(
 			"filename"
 		).textContent = `Searching for ${filename}...`;
 
-		// send json request to check file in server.js
-		fetch("http://localhost:3000/tts", {
+		fetch("http://localhost:3000/translate", {
 			method: "POST",
 			headers: { "Content-Type": "application/json" },
-			// use fuzzy search
 			body: JSON.stringify({ filename, fuzzy: true }),
 		})
 			.then((res) => res.json())
 			.then((data) => {
-				// if server returns error
 				if (data.error) {
 					document.getElementById("output").textContent = data.error;
 					speak(data.error);
-				} else if (data.content) {
+				} else if (data.translation) {
 					document.getElementById("output").textContent =
-						data.content;
-					speak(data.content);
+						data.translation;
+					speak(data.translation);
 				}
 			})
-
-			// if server itself fails
 			.catch(() => {
 				document.getElementById("output").textContent =
-					"A server error has occurred.";
-				speak("A server error has occurred. Try again.");
+					"A server error occurred.";
+				speak("A server error occurred. Try again.");
 			});
 	};
 
-	// start recognition only after defining above fns
 	recognition.start();
 }
 
@@ -128,5 +110,5 @@ function stopSpeech() {
 
 window.addEventListener("load", () => {
 	window.speechSynthesis.cancel();
-	speak("Text to speech.");
+	speak("Translator.");
 });

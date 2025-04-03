@@ -2,7 +2,7 @@
 <html lang="en">
 	<head>
 		<meta charset="UTF-8" />
-		<title>Summarizer</title>
+		<title>VisiLearn | Summarizer</title>
 		<link rel="stylesheet" href="summarizer.css" />
 		<link
 			href="https://fonts.googleapis.com/css2?family=Inter&family=Poppins&family=Cinzel"
@@ -24,7 +24,7 @@
 				<a href="translate.html">Translate</a>
 			</div>
 		</div>
-		<h1>Voice Summarizer</h1>
+		<h1>Summarizer</h1>
 		<button id="start">Start voice input</button>
 		<p>
 			<span id="filename">Waiting for file...</span>
@@ -32,6 +32,13 @@
 		<p>
 			<span id="output"></span>
 		</p>
+		<p>
+			<span id="bleuScore">BLEU Score: N/A</span>
+		</p>
+		<p>
+			<span id="rougeScore">ROUGE Score: N/A</span>
+		</p>
+
 		<script src="summarizer.js"></script>
 	</body>
 </html>

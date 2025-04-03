@@ -24,7 +24,7 @@ document.addEventListener("keydown", (event) => {
 		speak(
 			"Summarizer.\
 			Press 1 to go back to the main screen.\
-			Press 2 to convert a text file to speech.\
+			Press 2 to summarize a file.\
 			Press 0 to stop voice input and playback."
 		);
 	}
@@ -64,8 +64,7 @@ function startVoiceInput() {
 	// when error
 	recognition.onerror = (event) => {
 		document.getElementById("filename").textContent =
-			"An error has occured.";
-		speak("An error has occured. Try again.");
+			"An error has occurred.";
 	};
 
 	// when speech recognized
@@ -83,7 +82,7 @@ function startVoiceInput() {
 		document.getElementById("filename").textContent = `Found ${filename}`;
 
 		// send json request to check file in server.js
-		fetch("http://localhost:3000/check-file", {
+		fetch("http://localhost:3000/summarize", {
 			method: "POST",
 			headers: { "Content-Type": "application/json" },
 			body: JSON.stringify({ filename, fuzzy: true }), // Enable fuzzy search
@@ -91,35 +90,34 @@ function startVoiceInput() {
 			.then((res) => res.json())
 			.then((data) => {
 				// if server returns error
-				// display error
-				// speak error
 				if (data.error) {
 					document.getElementById("output").textContent = data.error;
 					speak(data.error);
 				}
-
 				// handle docx content
 				else if (data.docxContent) {
 					document.getElementById("output").textContent =
 						data.docxContent;
 					speak(data.docxContent);
 				}
-
-				// display output
-				// speak output
+				// display the summary and scores
 				else {
 					document.getElementById("output").textContent =
 						data.summary;
+					document.getElementById(
+						"bleuScore"
+					).textContent = `BLEU Score: ${data.bleuScore}`;
+					document.getElementById(
+						"rougeScore"
+					).textContent = `ROUGE Score: ${data.rougeScore}`;
 					speak(data.summary);
 				}
 			})
-
 			// if server itself fails
-			// display error
 			.catch(() => {
 				document.getElementById("output").textContent =
-					"A server error has occured.";
-				speak("A server error has occured. Try again.");
+					"A server error has occurred.";
+				speak("A server error has occurred. Try again.");
 			});
 	};
 
@@ -166,5 +164,5 @@ function stopSpeech() {
 
 window.addEventListener("load", () => {
 	window.speechSynthesis.cancel();
-	speak("Summarizer.Press Space for Help");
+	speak("Summarizer.");
 });

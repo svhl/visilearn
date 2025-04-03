@@ -71,18 +71,14 @@ button:hover {
 	font-style: italic;
 }
 
-#brailleOutput {
+#output {
 	display: block;
 	margin-top: 25px;
 	font-family: "Poppins", sans-serif;
 	color: rgba(0, 0, 0, 0.8);
-	padding-left: 300px;
-	padding-right: 300px;
+	padding-left: 200px;
+	padding-right: 200px;
 	font-size: 25px;
 	text-align: left;
-	padding-bottom: 15px;
-}
-
-.braille-download {
 	padding-bottom: 45px;
 }
