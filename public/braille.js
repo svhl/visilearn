@@ -63,7 +63,9 @@ function startVoiceInput() {
 		let filename = event.results[0][0].transcript.trim();
 		filename = filename.replace(/\.$/, ""); // Remove trailing period
 
-		document.getElementById("filename").textContent = `Found ${filename}`;
+		document.getElementById(
+			"filename"
+		).textContent = `Found ${filename}...`;
 		convertFileToBraille(filename);
 	};
 
@@ -73,7 +75,7 @@ function startVoiceInput() {
 // Convert file to Braille
 async function convertFileToBraille(filename) {
 	try {
-		const response = await fetch("/convert-to-braille", {
+		const response = await fetch("/braille", {
 			method: "POST",
 			headers: { "Content-Type": "application/json" },
 			body: JSON.stringify({ filename }),
@@ -88,13 +90,8 @@ async function convertFileToBraille(filename) {
 		}
 
 		document.getElementById("brailleOutput").textContent = data.brailleText;
-		const downloadLink = document.getElementById("downloadLink");
-		downloadLink.href = data.downloadLink;
-		downloadLink.style.display = "inline-block";
 
-		// Auto-download after short delay
 		setTimeout(() => {
-			downloadLink.click();
 			speak("Braille file is ready for download.");
 		}, 500);
 	} catch (error) {

@@ -79,7 +79,9 @@ function startVoiceInput() {
 		const possibleFilenames = [`${filename}.txt`, `${filename}.docx`];
 
 		// display filename attempt
-		document.getElementById("filename").textContent = `Found ${filename}`;
+		document.getElementById(
+			"filename"
+		).textContent = `Found ${filename}...`;
 
 		// send json request to check file in server.js
 		fetch("http://localhost:3000/summarize", {

@@ -76,9 +76,19 @@ button:hover {
 	margin-top: 25px;
 	font-family: "Poppins", sans-serif;
 	color: rgba(0, 0, 0, 0.8);
-	padding-left: 300px;
-	padding-right: 300px;
+	padding-left: 20px;
+	padding-right: 20px;
 	font-size: 25px;
 	text-align: left;
 	padding-bottom: 45px;
+}
+
+#bleuScore,
+#rougeScore {
+	font-family: "Inter", sans-serif;
+	opacity: 75%;
+}
+
+#rougeScore {
+	padding-bottom: 40px;
 }

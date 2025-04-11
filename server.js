@@ -98,7 +98,6 @@ app.post("/tts", async (req, res) => {
 });
 
 // braille
-
 const brailleMaps = {
 	english: {
 		a: "⠁",
@@ -405,7 +404,6 @@ const brailleMaps = {
 	},
 };
 
-// Language Detection Function
 function detectLanguage(text) {
 	const hindiChars = /[\u0900-\u097F]/;
 	const malayalamChars = /[\u0D00-\u0D7F]/;
@@ -419,7 +417,10 @@ function detectLanguage(text) {
 	return "english";
 }
 
-// Helper Functions for Malayalam
+function isHindiVowelSign(char) {
+	return ["ा", "ि", "ी", "ु", "ू", "ृ", "े", "ै", "ो", "ौ"].includes(char);
+}
+
 function isMalayalamVowelSign(char) {
 	return [
 		"ാ",
@@ -442,7 +443,6 @@ function isMalayalamChillu(char) {
 	return ["ൺ", "ൻ", "ർ", "ൽ", "ൾ", "ൿ"].includes(char);
 }
 
-// Enhanced Braille Conversion Function
 function convertToBraille(text) {
 	if (!text || typeof text !== "string") return "";
 
@@ -452,6 +452,7 @@ function convertToBraille(text) {
 	// Special handling for Indian languages
 	if (language === "hindi" || language === "malayalam") {
 		let result = "";
+
 		for (let i = 0; i < text.length; i++) {
 			const char = text[i];
 			const nextChar = text[i + 1];
@@ -528,34 +529,7 @@ function convertToBraille(text) {
 		.join("");
 }
 
-// Helper functions
-function isHindiVowelSign(char) {
-	return ["ा", "ि", "ी", "ु", "ू", "ृ", "े", "ै", "ो", "ौ"].includes(char);
-}
-
-function isMalayalamVowelSign(char) {
-	return [
-		"ാ",
-		"ി",
-		"ീ",
-		"ു",
-		"ൂ",
-		"ൃ",
-		"െ",
-		"േ",
-		"ൈ",
-		"ൊ",
-		"ോ",
-		"ൌ",
-		"ൗ",
-	].includes(char);
-}
-
-function isMalayalamChillu(char) {
-	return ["ൺ", "ൻ", "ർ", "ൽ", "ൾ", "ൿ"].includes(char);
-}
-
-app.post("/convert-to-braille", async (req, res) => {
+app.post("/braille", async (req, res) => {
 	try {
 		let { filename } = req.body;
 		const desktopPath = path.join(os.homedir(), "Desktop");
@@ -624,10 +598,7 @@ app.post("/convert-to-braille", async (req, res) => {
 		const language = detectLanguage(fileContent);
 
 		// Save Braille text to a file
-		const brailleFilePath = path.join(
-			desktopPath,
-			`${filename}.braille.txt`
-		);
+		const brailleFilePath = path.join(desktopPath, `${filename}.brl`);
 		await fs.writeFile(brailleFilePath, brailleText);
 
 		return res.json({
@@ -678,11 +649,42 @@ const summarizeText = (text) => {
 		.join(" ");
 };
 
+function calculateBleu(reference, candidate) {
+	const referenceWords = reference
+		.split(/\s+/)
+		.map((word) => word.toLowerCase());
+	const candidateWords = candidate
+		.split(/\s+/)
+		.map((word) => word.toLowerCase());
+
+	const intersection = candidateWords.filter((word) =>
+		referenceWords.includes(word)
+	);
+	const precision = intersection.length / candidateWords.length;
+
+	return precision;
+}
+
+function calculateRouge(reference, candidate) {
+	const referenceWords = reference
+		.split(/\s+/)
+		.map((word) => word.toLowerCase());
+	const candidateWords = candidate
+		.split(/\s+/)
+		.map((word) => word.toLowerCase());
+
+	const intersection = candidateWords.filter((word) =>
+		referenceWords.includes(word)
+	);
+	const recall = intersection.length / referenceWords.length;
+
+	return recall;
+}
+
 app.post("/summarize", async (req, res) => {
 	try {
 		let { filename } = req.body;
 		const desktopPath = path.join(os.homedir(), "Desktop");
-		const referenceSummary = "This is a reference summary for evaluation.";
 
 		filename = path.basename(filename);
 		const targetFilename = filename.toLowerCase();
@@ -742,6 +744,7 @@ app.post("/summarize", async (req, res) => {
 			}
 		}
 
+		const referenceSummary = fileContent;
 		const summary = summarizeText(fileContent);
 		const bleuScore = calculateBleu(referenceSummary, summary);
 		const rougeScore = calculateRouge(referenceSummary, summary);
@@ -757,39 +760,8 @@ app.post("/summarize", async (req, res) => {
 	}
 });
 
-function calculateBleu(reference, candidate) {
-	const referenceWords = reference
-		.split(/\s+/)
-		.map((word) => word.toLowerCase());
-	const candidateWords = candidate
-		.split(/\s+/)
-		.map((word) => word.toLowerCase());
-
-	const intersection = candidateWords.filter((word) =>
-		referenceWords.includes(word)
-	);
-	const precision = intersection.length / candidateWords.length;
-
-	return precision;
-}
-
-function calculateRouge(reference, candidate) {
-	const referenceWords = reference
-		.split(/\s+/)
-		.map((word) => word.toLowerCase());
-	const candidateWords = candidate
-		.split(/\s+/)
-		.map((word) => word.toLowerCase());
-
-	const intersection = candidateWords.filter((word) =>
-		referenceWords.includes(word)
-	);
-	const recall = intersection.length / referenceWords.length;
-
-	return recall;
-}
-
-app.post("/process-image", async (req, res) => {
+// image recognition
+app.post("/image", async (req, res) => {
 	try {
 		let { filename } = req.body;
 		const desktopPath = path.join(os.homedir(), "Desktop");
@@ -876,6 +848,67 @@ app.post("/process-image", async (req, res) => {
 	}
 });
 
+app.post("/upload-image", async (req, res) => {
+	try {
+		const { base64Image, mimeType } = req.body;
+
+		if (!base64Image || !mimeType) {
+			return res.status(400).json({ error: "Invalid image data." });
+		}
+
+		// Ensure API key is set
+		const GEMINI_API_KEY = process.env.GEMINI_API_KEY;
+		if (!GEMINI_API_KEY) {
+			return res
+				.status(500)
+				.json({ error: "Server misconfiguration: missing API key." });
+		}
+
+		// Prepare request for Gemini API
+		const requestBody = {
+			contents: [
+				{
+					parts: [
+						{
+							text: "Describe the objects and scene in this image. Do not use asterisks (*) for bolding text.",
+						},
+						{
+							inlineData: {
+								mimeType,
+								data: base64Image,
+							},
+						},
+					],
+				},
+			],
+		};
+
+		const response = await fetch(
+			`https://generativelanguage.googleapis.com/v1/models/gemini-1.5-flash:generateContent?key=${GEMINI_API_KEY}`,
+			{
+				method: "POST",
+				headers: { "Content-Type": "application/json" },
+				body: JSON.stringify(requestBody),
+			}
+		);
+
+		const result = await response.json();
+
+		if (result.candidates && result.candidates.length > 0) {
+			return res.json({
+				success: true,
+				description: result.candidates[0].content.parts[0].text,
+			});
+		} else {
+			return res.status(500).json({ error: "Failed to analyze image." });
+		}
+	} catch (error) {
+		console.error("Error in /upload-image:", error);
+		return res.status(500).json({ error: "Internal server error." });
+	}
+});
+
+// translator
 app.post("/translate", async (req, res) => {
 	try {
 		let { filename } = req.body;
@@ -946,66 +979,6 @@ app.post("/translate", async (req, res) => {
 	} catch (error) {
 		console.error("Error in translation:", error);
 		return res.status(500).json({ error: "Error processing translation." });
-	}
-});
-
-app.post("/upload-image", async (req, res) => {
-	try {
-		const { base64Image, mimeType } = req.body;
-
-		if (!base64Image || !mimeType) {
-			return res.status(400).json({ error: "Invalid image data." });
-		}
-
-		// Ensure API key is set
-		const GEMINI_API_KEY = process.env.GEMINI_API_KEY;
-		if (!GEMINI_API_KEY) {
-			return res
-				.status(500)
-				.json({ error: "Server misconfiguration: missing API key." });
-		}
-
-		// Prepare request for Gemini API
-		const requestBody = {
-			contents: [
-				{
-					parts: [
-						{
-							text: "Describe the objects and scene in this image. Do not use asterisks (*) for bolding text.",
-						},
-						{
-							inlineData: {
-								mimeType,
-								data: base64Image,
-							},
-						},
-					],
-				},
-			],
-		};
-
-		const response = await fetch(
-			`https://generativelanguage.googleapis.com/v1/models/gemini-1.5-flash:generateContent?key=${GEMINI_API_KEY}`,
-			{
-				method: "POST",
-				headers: { "Content-Type": "application/json" },
-				body: JSON.stringify(requestBody),
-			}
-		);
-
-		const result = await response.json();
-
-		if (result.candidates && result.candidates.length > 0) {
-			return res.json({
-				success: true,
-				description: result.candidates[0].content.parts[0].text,
-			});
-		} else {
-			return res.status(500).json({ error: "Failed to analyze image." });
-		}
-	} catch (error) {
-		console.error("Error in /upload-image:", error);
-		return res.status(500).json({ error: "Internal server error." });
 	}
 });
 

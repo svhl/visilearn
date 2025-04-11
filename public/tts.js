@@ -62,7 +62,7 @@ function startVoiceInput() {
 
 		document.getElementById(
 			"filename"
-		).textContent = `Searching for ${filename}...`;
+		).textContent = `Found ${filename}...`;
 
 		// send json request to check file in server.js
 		fetch("http://localhost:3000/tts", {

@@ -8,6 +8,7 @@ document.addEventListener("keydown", function (event) {
             Press 3 for summarizer.\
             Press 4 for image recognition.\
             Press 5 for translator.\
+			Press spacebar on any page to learn more.\
 			Press 0 to stop voice input and playback."
 		);
 	} else if (event.key === "0") {

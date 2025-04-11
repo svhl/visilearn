@@ -50,7 +50,7 @@ function startVoiceInput() {
 
 		document.getElementById(
 			"filename"
-		).textContent = `Searching for ${filename}...`;
+		).textContent = `Found ${filename}...`;
 
 		fetch("http://localhost:3000/translate", {
 			method: "POST",
