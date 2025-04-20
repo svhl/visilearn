@@ -22,6 +22,13 @@ An all-in-one learning platform for the visually impaired with easy-to-use voice
 
 ## Screenshots
 
+<img src="https://github.com/user-attachments/assets/6786900d-6897-4010-a9c9-1d4dbd0f808e" width="600"/>
+
+<img src="https://github.com/user-attachments/assets/ae56e101-9e80-41d6-a685-c58f1d9731b2" width="600"/>
+
+<img src="https://github.com/user-attachments/assets/b280ffff-3474-41b2-be8d-2530f34a1120" width="600"/>
+
+
 ## How to use
 
 ### Prerequisites
